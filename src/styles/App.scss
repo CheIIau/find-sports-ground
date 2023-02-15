@@ -1,0 +1,16 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.app {
+  margin-top: 64px;
+}
+
+.outlet {
+  padding: 40px;
+  @media (max-width: 500px) {
+    padding: 24px,
+  }
+}
