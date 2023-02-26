@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { useFetchMarkersQuery } from 'src/services/MapService'
+import { useFetchSportsGroundsQuery } from 'src/services/MapService'
 
 type AboutProps = {
   id?: string
@@ -8,7 +8,7 @@ type AboutProps = {
 function About() {
   const { id } = useParams<AboutProps>()
   // const { markers } = useAppSelector((state) => state.mapReducer)
-  const { data: markers, isLoading } = useFetchMarkersQuery()
+  const { data: sportsGrounds, isLoading } = useFetchSportsGroundsQuery()
 
   return (
     <div>
@@ -17,11 +17,15 @@ function About() {
         {isLoading ? (
           <div>Loading...</div>
         ) : (
-          markers?.map((marker, i) => (
-            <div key={i}>{marker.x + ' ' + marker.y}</div>
+          sportsGrounds?.map((sportsGround, i) => (
+            <div key={i}>
+              {`${sportsGround.marker[0]} ${sportsGround.marker[1]}`}
+              {sportsGround.fileUrls?.length && (
+                <img src={sportsGround.fileUrls[0]}></img>
+              )}
+            </div>
           ))
         )}
-        {}
       </div>
       {Boolean(id) && <h1>Parametr {id}</h1>}
       <Link to="/">

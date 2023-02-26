@@ -3,8 +3,10 @@ import '../styles/App.scss'
 import Header from '../UI/Header/Header'
 import { Outlet } from 'react-router-dom'
 import CircularProgress from '@mui/material/CircularProgress'
+import { useBoot } from 'src/hooks/boot'
 
 function App() {
+  useBoot()
   return (
     <div className="app">
       <Header />

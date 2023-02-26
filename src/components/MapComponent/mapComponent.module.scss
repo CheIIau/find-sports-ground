@@ -9,4 +9,14 @@
 .mapWrapper {
   display: flex;
   justify-content: center;
+  position: relative;
+}
+
+.nearest-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  @media (max-width: 600px) {
+    right: 25px;
+  }
 }

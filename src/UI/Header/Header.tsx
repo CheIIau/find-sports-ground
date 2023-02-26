@@ -1,57 +1,83 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import headerStyle from './header.module.scss'
 
-import { useState } from 'react'
-import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Drawer from '@mui/material/Drawer'
-import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import MenuIcon from '@mui/icons-material/Menu'
-import LoginIcon from '@mui/icons-material/Login'
-import InfoIcon from '@mui/icons-material/Info'
-import { SvgIcon } from '@mui/material'
+import { useState, useMemo, ReactNode } from 'react'
+import {
+  AppBar,
+  Box,
+  Drawer,
+  IconButton,
+  Typography,
+  SvgIcon,
+  Skeleton,
+  Toolbar
+} from '@mui/material'
+import {
+  Menu as MenuIcon,
+  Login as LoginIcon,
+  Info as InfoIcon,
+  Logout as LogoutIcon
+} from '@mui/icons-material'
 import { ReactComponent as StreetWorkout } from 'src/assets/street-workout.svg'
+import { useAppSelector } from 'src/hooks/redux'
+import { useLazyLogoutQuery } from 'src/services/UserService'
+import { DrawerContent } from './DrawerContent'
 
-const navItems = [
-  // { label: 'Home', link: '/', icon: LoginIcon },
-  { label: 'About', link: '/about', icon: <InfoIcon /> },
-  { label: 'Sign in', link: '/login', icon: <LoginIcon /> }
-]
+export interface NavBarButton {
+  label: string
+  link: string
+  icon: ReactNode
+  handler?: () => any
+}
 
 export default function DrawerAppBar() {
   const [mobileOpen, setMobileOpen] = useState(false)
-
+  const [logout] = useLazyLogoutQuery()
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
-
-  const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'left' }}>
-      <Typography variant="h6" sx={{ my: 2 }} align="center">
-        <Link to="/">Find Sports Ground</Link>
-      </Typography>
-      <Divider />
-      <List>
-        {navItems.map((item) => (
-          <ListItem key={item.link} disablePadding>
-            <ListItemButton
-              sx={{ textAlign: 'center' }}
-              component={Link}
-              to={item.link}
-            >
-              {item.label}
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+  const navigate = useNavigate()
+  const { uid } = useAppSelector((state) => state.rootReducer.userReducer.user)
+  const isAuthStateLoading = useAppSelector(
+    (state) => state.rootReducer.userReducer.loading
   )
+
+  const navItems = useMemo(() => {
+    const navBarButtons: NavBarButton[] = [
+      { label: 'About', link: '/about', icon: <InfoIcon /> }
+    ]
+    if (isAuthStateLoading) {
+      navBarButtons.push({
+        label: '',
+        link: '#',
+        icon: (
+          <Skeleton
+            sx={{ bgcolor: 'grey.600' }}
+            variant="circular"
+            width={20}
+            height={20}
+          />
+        )
+      })
+    } else if (!uid) {
+      navBarButtons.push({
+        label: 'Sign in',
+        link: '/login',
+        icon: <LoginIcon />
+      })
+    } else {
+      navBarButtons.push({
+        label: 'Sign out',
+        link: '#',
+        icon: <LogoutIcon />,
+        handler: async () => {
+          await logout()
+          navigate('/')
+        }
+      })
+    }
+    return navBarButtons
+  }, [uid, isAuthStateLoading])
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -118,31 +144,11 @@ export default function DrawerAppBar() {
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              // <Button
-              //   component={Link}
-              //   to={item.link}
-              //   key={item.label}
-              //   sx={{ color: '#000' }}
-              // >
-              //   {item.label}
-              // </Button>
-              <Link to={item.link} key={item.label}>
-                <IconButton
-                  key={item.label}
-                  sx={{ color: '#000' }}
-                >
+              <Link to={item.link} key={item.label} onClick={item?.handler}>
+                <IconButton key={item.label} sx={{ color: '#000' }}>
                   {item.icon}
                 </IconButton>
               </Link>
-              // <IconButton
-              //   key={item.label}
-              //   color="inherit"
-              //   to={item.link}
-              //   aria-label="open drawer"
-              //   sx={{ mr: 2, display: { sm: 'none' }, zIndex: 2 }}
-              // >
-              //   {item.icon}
-              // </IconButton>
             ))}
           </Box>
         </Toolbar>
@@ -159,11 +165,15 @@ export default function DrawerAppBar() {
             display: { xs: 'block', sm: 'none' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
-              width: 240
+              width: 240,
+              backgroundColor: '#363636'
             }
           }}
         >
-          {drawer}
+          <DrawerContent
+            handleDrawerToggle={handleDrawerToggle}
+            navItems={navItems}
+          />
         </Drawer>
       </Box>
     </Box>

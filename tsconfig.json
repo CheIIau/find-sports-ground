@@ -3,7 +3,8 @@
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "baseUrl": ".",
     "paths": {
-      "src/*": ["src/*"]
+      "src/*": ["src/*"],
+      "ymaps": ["node_modules/@types/yandex-maps"]
     },
     "types": ["vite-plugin-svgr/client"],
     "target": "ESNext",

@@ -6,7 +6,7 @@ export const useValidation = () => {
     value: string,
     rules: Array<(val: string) => boolean | string>
   ) => {
-    let err: string
+    let err = ''
     rules.every((rule) => {
       const result = rule(value)
       if (typeof result === 'string') {

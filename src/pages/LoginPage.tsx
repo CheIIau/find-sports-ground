@@ -1,8 +1,14 @@
 import { Box, Button } from '@mui/material'
 import { StandardTextFieldProps } from '@mui/material/TextField'
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import InputComponent from 'src/components/InputComponent/InputComponent'
 import { useValidation } from 'src/hooks/validation'
+import {
+  useLazyLoginQuery,
+  useRegisterMutation
+} from 'src/services/UserService'
+
 const generalProps: StandardTextFieldProps = {
   size: 'small',
   color: 'primary',
@@ -23,7 +29,7 @@ function loginPage() {
   const [password, setPassword] = useState('')
   const { validateInput, emailValidationRegex, emailTypingRegex } =
     useValidation()
-
+  const navigate = useNavigate()
   const emailRules = [
     (val: string) =>
       val.length <= 30 ? false : 'Max number of characters is 30',
@@ -44,6 +50,8 @@ function loginPage() {
     [password, email]
   )
 
+  const [register] = useRegisterMutation()
+  const [login] = useLazyLoginQuery()
   return (
     <div>
       <Box
@@ -76,6 +84,10 @@ function loginPage() {
                 backgroundColor: '#A0A0A0'
               }
             }}
+            onClick={() => {
+              login({ email, password })
+              navigate('/')
+            }}
           >
             Sign in
           </Button>
@@ -86,6 +98,10 @@ function loginPage() {
               '&.Mui-disabled': {
                 backgroundColor: '#A0A0A0'
               }
+            }}
+            onClick={() => {
+              register({ email, password })
+              navigate('/')
             }}
           >
             Sign up

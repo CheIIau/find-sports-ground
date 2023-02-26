@@ -44,7 +44,17 @@ module.exports = {
     'no-extra-boolean-cast': 'off',
     '@typescript-eslint/member-delimiter-style': 'off',
     '@typescript-eslint/indent': 'off',
-    "@typescript-eslint/no-invalid-void-type": "off",
+    '@typescript-eslint/no-invalid-void-type': 'off',
     'multiline-ternary': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-misused-promises': [
+      'error',
+      {
+        checksVoidReturn: {
+          attributes: false
+        }
+      }
+    ]
   }
 }

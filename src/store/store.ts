@@ -29,7 +29,7 @@ export const store = configureStore({
 export const setupStore = () => {
   return store
 }
-// watch later
+
 setupListeners(setupStore().dispatch)
 
 // for typization

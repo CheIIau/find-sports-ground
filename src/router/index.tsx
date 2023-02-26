@@ -1,14 +1,25 @@
 /* eslint-disable @typescript-eslint/promise-function-async */
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-import { lazy } from 'react'
+import { FunctionComponent, lazy } from 'react'
 import App from 'src/pages/App'
+import { useAppSelector } from 'src/hooks/redux'
 const About = lazy(() => import('src/pages/AboutPage'))
 const Home = lazy(() => import('src/pages/HomePage'))
 const LoginPage = lazy(() => import('src/pages/LoginPage'))
 const NotFound = lazy(() => import('src/pages/404'))
 const Error = lazy(() => import('src/pages/Error'))
 
-const isAuth = true
+const PrivateWrapper: FunctionComponent<PrivateWrapperType> = ({
+  children,
+  ...props
+}) => {
+  const { uid } = useAppSelector((state) => state.rootReducer.userReducer.user)
+  if (!props.getAccessToAuthUser) {
+    return uid ? <Navigate to="/" replace /> : children
+  }
+  return uid ? children : <Navigate to="/" replace />
+}
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -21,11 +32,15 @@ const router = createBrowserRouter([
       },
       {
         path: '/login',
-        element: <LoginPage />
+        element: (
+          <PrivateWrapper getAccessToAuthUser={false}>
+            <LoginPage />
+          </PrivateWrapper>
+        )
       },
       {
         path: '/about',
-        element: isAuth ? <About /> : <Navigate to="/" />,
+        element: <About />,
         children: [
           {
             path: '/about/:id',
@@ -41,4 +56,8 @@ const router = createBrowserRouter([
   }
 ])
 
+interface PrivateWrapperType {
+  getAccessToAuthUser: boolean
+  children: JSX.Element
+}
 export { router }

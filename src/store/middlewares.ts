@@ -8,9 +8,12 @@ export const rtkQueryErrorLogger: Middleware =
     const { dispatch } = store
     const { showSnackbar } = generalSlice.actions
     if (isRejectedWithValue(action)) {
-      console.warn('We got a rejected action!')
+      // console.warn('We got a rejected action!')
       dispatch(
-        showSnackbar({ message: action.error?.data?.message || 'Что-то пошло не так', type: 'error' })
+        showSnackbar({
+          message: action.payload?.message || 'Something went wrong',
+          type: 'error'
+        })
       )
     }
 

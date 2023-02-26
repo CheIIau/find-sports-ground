@@ -2,7 +2,7 @@
 function Error() {
   return (
     <div>
-      <h1>Что-то пошло чудовищно не так</h1>
+      <h1>Something went horribly wrong</h1>
     </div>
   )
 }
