@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
 import headerStyle from './header.module.scss'
-
 import { useState, useMemo, ReactNode } from 'react'
 import {
   AppBar,
@@ -15,7 +14,8 @@ import {
 import {
   Menu as MenuIcon,
   Login as LoginIcon,
-  Info as InfoIcon,
+  InfoOutlined as InfoIcon,
+  Add as AddIcon,
   Logout as LogoutIcon
 } from '@mui/icons-material'
 import { ReactComponent as StreetWorkout } from 'src/assets/street-workout.svg'
@@ -66,6 +66,11 @@ export default function DrawerAppBar() {
         icon: <LoginIcon />
       })
     } else {
+      navBarButtons.unshift({
+        label: 'Add New',
+        link: '/add-new',
+        icon: <AddIcon />
+      })
       navBarButtons.push({
         label: 'Sign out',
         link: '#',

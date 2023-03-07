@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
-import { SportsGroundWithKey } from 'src/models'
+import MyBalloonLayout from 'src/components/MapComponent/MyBalloonLayout'
+import MyBalloonMobileLayout from 'src/components/MapComponent/MyBalloonMobileLayout'
+import { Marker, SportsGroundWithKey } from 'src/models'
 import ymaps from 'ymaps'
+import { renderToString } from 'react-dom/server'
 
 type YmapsInstanse = typeof ymaps
 
@@ -8,7 +11,7 @@ interface useMapProps {
   buttonClickHandler?: ButtonHandlerType
   interactionType: InteractionType
   sportsGrounds?: SportsGroundWithKey[]
-  selectedSportsGroundCoords?: [number, number]
+  chosenSportsGroundCoords?: Marker
 }
 type InteractionType = 'read' | 'add'
 type ButtonHandlerType =
@@ -19,9 +22,11 @@ const useMap = ({
   buttonClickHandler,
   interactionType,
   sportsGrounds,
-  selectedSportsGroundCoords
+  chosenSportsGroundCoords
 }: useMapProps) => {
   let i = 0
+  const myBalloonLayoutTemplate = renderToString(<MyBalloonLayout />)
+  const MyBalloonMobileTemplate = renderToString(<MyBalloonMobileLayout />)
 
   // const [choosenMarker, setchoosenMarker] = useState<null | string>(null)
   const [constructor, setConstructor] = useState<YmapsInstanse>()
@@ -44,11 +49,6 @@ const useMap = ({
 
       const { userPosition } = await locateUser(map, constructor)
 
-      if (selectedSportsGroundCoords?.length) {
-        await map.panTo(selectedSportsGroundCoords, { duration: 300 })
-      } else {
-        await map.panTo(userPosition!, { duration: 300 })
-      }
       setUserPosition(userPosition)
       if (interactionType === 'add') {
         addOnMarkerAddHandler(map, constructor, buttonClickHandler)
@@ -70,10 +70,24 @@ const useMap = ({
   }, [sportsGrounds, constructor])
 
   useEffect(() => {
-    if (interactionType === 'read' && markers?.length) {
-      addOnMarkerSelectHandler(map!, constructor!, markers)
+    if (markers?.length && constructor) {
+      continueToSetUpMap()
     }
-  }, [markers])
+    async function continueToSetUpMap() {
+      const { userPosition } = await locateUser(map!, constructor!)
+      if (interactionType === 'read' && markers?.length) {
+        addOnMarkerSelectHandler(map!, markers, buttonClickHandler)
+      }
+      if (chosenSportsGroundCoords?.length) {
+        await map?.panTo(chosenSportsGroundCoords, { duration: 300 })
+        if (collectionQuery) {
+          locateNearest(chosenSportsGroundCoords)
+        }
+      } else {
+        await map?.panTo(userPosition!, { duration: 300 })
+      }
+    }
+  }, [markers, collectionQuery])
 
   async function initMap(container: HTMLElement) {
     let constructor: YmapsInstanse
@@ -107,6 +121,7 @@ const useMap = ({
     )[0].style.display = 'none'
     return { constructor, map }
   }
+
   async function getGeolocation(constructor: YmapsInstanse) {
     try {
       const { geoObjects } = await constructor.geolocation.get({
@@ -165,7 +180,7 @@ const useMap = ({
       children: markers
     })
 
-    // map.geoObjects.add(collection)
+    // map.geoObjects.add(collection) // for not removing markers when out of user view
     const collectionQuery = constructor.geoQuery(collection)
     collectionQuery.searchInside(map).addToMap(map)
 
@@ -225,17 +240,18 @@ const useMap = ({
 
   function addOnMarkerSelectHandler(
     map: ymaps.Map,
-    constructor: YmapsInstanse,
-    markers: ymaps.Placemark[]
+    markers: ymaps.Placemark[],
+    cb?: ButtonHandlerType
   ) {
     markers.forEach((marker) => {
       marker.events.add('click', (event) => {
         // const coords = event.get('coords')
-        // console.log(marker.geometry!._coordinates)
+        // const coords = marker.geometry!._coordinates
         const data = event.get('target')!.properties._data as { key: string }
-        // if (cb) {
-        //   cb()
-        // }
+
+        if (cb) {
+          cb(data.key)
+        }
 
         if (previousChosenMarker) {
           previousChosenMarker?.options?.set({
@@ -254,13 +270,17 @@ const useMap = ({
         })
         map.panTo(marker.geometry!._coordinates, { duration: 300 })
         previousChosenMarker = marker
-        // setPreviousChosenMarker(marker)
       })
     })
   }
 
-  function locateNearest() {
-    const nearest = collectionQuery.getClosestTo(userPosition)
+  function locateNearest(position?: [number, number]) {
+    let nearest
+    if (position?.length === 2) {
+      nearest = collectionQuery.getClosestTo(position)
+    } else {
+      nearest = collectionQuery.getClosestTo(userPosition)
+    }
     previousChosenMarker?.options?.set({
       iconLayout: 'default#image',
       iconImageHref: 'src/assets/black-marker.png',
@@ -288,9 +308,7 @@ const useMap = ({
     cb?: ButtonHandlerType
   ) {
     const MyBalloonMobileLayout = constructor.templateLayoutFactory.createClass(
-      `<div class="popover-mobile">
-         <button class='add-button'>Add Sports Ground</button>
-       </div>`,
+      MyBalloonMobileTemplate,
       {
         build: function () {
           this.constructor.superclass.build.call(this)
@@ -330,13 +348,7 @@ const useMap = ({
     )
 
     const MyBalloonLayout = constructor.templateLayoutFactory.createClass(
-      `<div class="popover">
-        <a class="close" href="#">&times;</a>
-        <div class="arrow"></div>
-        <div class="popover-inner">
-          <button class='add-button'>Add Sports Ground</button>
-        </div>
-        </div>`,
+      myBalloonLayoutTemplate,
       {
         build: function () {
           this.constructor.superclass.build.call(this)
@@ -420,55 +432,7 @@ const useMap = ({
     )
     return { MyBalloonMobileLayout, MyBalloonLayout }
   }
-  // function createNearestLayout(
-  //   map: ymaps.Map,
-  //   constructor: YmapsInstanse,
-  //   cb?: ButtonHandlerType
-  // ) {
-  //   const NearestSportsGroundLayout = constructor.templateLayoutFactory.createClass(
-  //     `<div class="popover-mobile">
-  //        <button class='add-button'>Add Sports Ground</button>
-  //      </div>`,
-  //     {
-  //       build: function () {
-  //         this.constructor.superclass.build.call(this)
 
-  //         this.layout =
-  //           this.getParentElement().getElementsByClassName('popover-mobile')[0]
-
-  //         this.layout.closest(
-  //           '.ymaps-2-1-79-balloon__content'
-  //         ).style.backgroundColor = 'rgba(80, 80, 80, .5)'
-  //         this.layout.closest(
-  //           '.ymaps-2-1-79-balloon_layout_panel'
-  //         ).style.backgroundColor = 'rgba(80, 80, 80, .5)'
-  //         this.addButtonEventHandler(cb)
-  //       },
-  //       addButtonEventHandler(cb?: ButtonHandlerType) {
-  //         this.layout.getElementsByClassName('add-button')[0].addEventListener(
-  //           'click',
-  //           (e: MouseEvent) => {
-  //             if (cb) {
-  //               cb(
-  //                 map.geoObjects.get(map.geoObjects.getLength() - 1).geometry
-  //                   ._coordinates
-  //               )
-  //             }
-  //             this.onCloseClick(e)
-  //           },
-  //           { once: true }
-  //         )
-  //       },
-  //       onCloseClick: function (e: MouseEvent) {
-  //         e.preventDefault()
-
-  //         this.events.fire('userclose')
-  //       }
-  //     }
-  //   )
-
-  //   return { NearestSportsGroundLayout }
-  // }
   return { locateNearest }
 }
 

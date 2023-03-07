@@ -55,6 +55,7 @@ module.exports = {
           attributes: false
         }
       }
-    ]
+    ],
+    'n/no-callback-literal': 'off'
   }
 }

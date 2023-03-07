@@ -1,20 +1,29 @@
 import mapComponentStyles from './mapComponent.module.scss'
-import useMap from 'src/hooks/map'
-import { FunctionComponent } from 'react'
-import { useFetchSportsGroundsQuery } from 'src/services/MapService'
+import useMap from 'src/hooks/map.tsx'
+import React, { FunctionComponent } from 'react'
 import { Fab } from '@mui/material'
 import { LocationOn } from '@mui/icons-material'
-
+import { Marker, SportsGroundWithKey } from 'src/models'
 interface Props {
-  setMarker: React.Dispatch<React.SetStateAction<[number, number] | null>>
+  buttonClickHandler?:
+    | ((args: any) => any)
+    | React.Dispatch<React.SetStateAction<any>>
+  interactionType: 'read' | 'add'
+  sportsGrounds: SportsGroundWithKey[]
+  chosenSportsGroundCoords?: Marker
 }
 
-const mapComponent: FunctionComponent<Props> = ({ setMarker }) => {
-  const { data: sportsGrounds } = useFetchSportsGroundsQuery()
+const mapComponent: FunctionComponent<Props> = ({
+  buttonClickHandler,
+  interactionType,
+  sportsGrounds,
+  chosenSportsGroundCoords
+}) => {
   const { locateNearest } = useMap({
-    buttonClickHandler: setMarker,
-    interactionType: 'read',
-    sportsGrounds
+    buttonClickHandler,
+    interactionType,
+    sportsGrounds,
+    chosenSportsGroundCoords
   })
 
   return (

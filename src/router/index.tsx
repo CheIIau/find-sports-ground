@@ -8,6 +8,7 @@ const Home = lazy(() => import('src/pages/HomePage'))
 const LoginPage = lazy(() => import('src/pages/LoginPage'))
 const NotFound = lazy(() => import('src/pages/404'))
 const Error = lazy(() => import('src/pages/Error'))
+const AddNew = lazy(() => import('src/pages/AddNew'))
 
 const PrivateWrapper: FunctionComponent<PrivateWrapperType> = ({
   children,
@@ -28,7 +29,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Home />
+        element: <Home />,
+        children: [
+          {
+            path: '/:key',
+            element: <Home />
+          }
+        ]
       },
       {
         path: '/login',
@@ -39,14 +46,16 @@ const router = createBrowserRouter([
         )
       },
       {
+        path: '/add-new',
+        element: (
+          <PrivateWrapper getAccessToAuthUser={true}>
+            <AddNew />
+          </PrivateWrapper>
+        )
+      },
+      {
         path: '/about',
-        element: <About />,
-        children: [
-          {
-            path: '/about/:id',
-            element: <About />
-          }
-        ]
+        element: <About />
       },
       {
         path: '/*',

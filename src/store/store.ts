@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './reducers/UserSlice'
-import mapReducer from './reducers/MapSlice'
+// import mapReducer from './reducers/MapSlice'
 import generalReducer from './reducers/GeneralSlice'
 import { userApi } from 'src/services/UserService'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
@@ -9,7 +9,7 @@ import { rtkQueryErrorLogger as logger } from './middlewares'
 
 const rootReducer = combineReducers({
   userReducer,
-  mapReducer,
+  // mapReducer,
   generalReducer
 })
 
