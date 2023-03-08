@@ -4,7 +4,7 @@ import { FunctionComponent, lazy } from 'react'
 import App from 'src/pages/App'
 import { useAppSelector } from 'src/hooks/redux'
 const About = lazy(() => import('src/pages/AboutPage'))
-const Home = lazy(() => import('src/pages/HomePage'))
+const Home = lazy(() => import('src/pages/HomePage/HomePage'))
 const LoginPage = lazy(() => import('src/pages/LoginPage'))
 const NotFound = lazy(() => import('src/pages/404'))
 const Error = lazy(() => import('src/pages/Error'))

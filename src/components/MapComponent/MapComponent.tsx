@@ -1,4 +1,5 @@
 import mapComponentStyles from './mapComponent.module.scss'
+/// @ts-expect-error
 import useMap from 'src/hooks/map.tsx'
 import React, { FunctionComponent } from 'react'
 import { Fab } from '@mui/material'

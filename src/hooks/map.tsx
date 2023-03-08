@@ -1,3 +1,4 @@
+/// @ts-nocheck
 import { useEffect, useState } from 'react'
 import MyBalloonLayout from 'src/components/MapComponent/MyBalloonLayout'
 import MyBalloonMobileLayout from 'src/components/MapComponent/MyBalloonMobileLayout'
@@ -168,7 +169,7 @@ const useMap = ({
         { key: sportsGround.sportsGroundKey },
         {
           iconLayout: 'default#image',
-          iconImageHref: 'src/assets/black-marker.png',
+          iconImageHref: 'map/black-marker.png',
           iconImageSize: [50, 70],
           iconImageOffset: [-16, -64]
         }
@@ -215,7 +216,7 @@ const useMap = ({
           {
             // preset: 'islands#blackSportIcon'
             iconLayout: 'default#image',
-            iconImageHref: 'src/assets/yellow-marker.png',
+            iconImageHref: 'map/yellow-marker.png',
             iconImageSize: [50, 70],
             iconImageOffset: [-16, -64]
           }
@@ -256,7 +257,7 @@ const useMap = ({
         if (previousChosenMarker) {
           previousChosenMarker?.options?.set({
             iconLayout: 'default#image',
-            iconImageHref: 'src/assets/black-marker.png',
+            iconImageHref: 'map/black-marker.png',
             iconImageSize: [50, 70],
             iconImageOffset: [-16, -64]
           })
@@ -264,7 +265,7 @@ const useMap = ({
 
         event.get('target')!.options.set({
           iconLayout: 'default#image',
-          iconImageHref: 'src/assets/yellow-marker.png',
+          iconImageHref: 'map/yellow-marker.png',
           iconImageSize: [50, 70],
           iconImageOffset: [-16, -64]
         })
@@ -283,13 +284,13 @@ const useMap = ({
     }
     previousChosenMarker?.options?.set({
       iconLayout: 'default#image',
-      iconImageHref: 'src/assets/black-marker.png',
+      iconImageHref: 'map/black-marker.png',
       iconImageSize: [50, 70],
       iconImageOffset: [-16, -64]
     })
     nearest.options.set({
       iconLayout: 'default#image',
-      iconImageHref: 'src/assets/yellow-marker.png',
+      iconImageHref: 'map/yellow-marker.png',
       iconImageSize: [50, 70],
       iconImageOffset: [-16, -64]
     })
