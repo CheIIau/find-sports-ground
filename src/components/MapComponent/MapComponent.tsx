@@ -35,7 +35,7 @@ const mapComponent: FunctionComponent<Props> = ({
         aria-label="add"
         size="medium"
         className={mapComponentStyles['nearest-button']}
-        onClick={locateNearest}
+        onClick={() => locateNearest()}
       >
         <LocationOn fontSize="medium" />
       </Fab>

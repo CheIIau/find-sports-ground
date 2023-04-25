@@ -1,5 +1,13 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-import { get, getDatabase, push, ref, set, update } from 'firebase/database'
+import {
+  child,
+  get,
+  getDatabase,
+  push,
+  ref,
+  set,
+  update
+} from 'firebase/database'
 import { app } from 'src/hooks/boot'
 import { store } from 'src/store/store'
 import {
@@ -9,12 +17,12 @@ import {
   getDownloadURL,
   StorageReference
 } from 'firebase/storage'
-import { Marker, SportsGround, SportsGroundWithKey } from 'src/models'
+import { Marker, SportsGround, SportsGroundWithKey, Comment } from 'src/models'
 
 export const markersApi = createApi({
   reducerPath: 'markers',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Marker'],
+  tagTypes: ['Marker', 'Comment'],
   refetchOnMountOrArgChange: 30,
   keepUnusedDataFor: 10,
   endpoints: (build) => ({
@@ -23,7 +31,7 @@ export const markersApi = createApi({
         try {
           const db = getDatabase(app)
           const sportsGroundsRef = ref(db, 'sportsGrounds')
-          const snapshot: FetchSportsGroundsResponse = (
+          const snapshot: SportsGroundResponse = (
             await get(sportsGroundsRef)
           ).val()
           const markers = Object.entries(snapshot).map(([key, value]) => ({
@@ -74,17 +82,64 @@ export const markersApi = createApi({
         }
       },
       invalidatesTags: ['Marker']
+    }),
+    addComment: build.mutation<void, AddCommentRequest>({
+      async queryFn({ sportsGroundKey, commentText, userName }) {
+        try {
+          const db = getDatabase(app)
+          const commentsRef = ref(db, 'comments')
+          const commentKey = push(child(commentsRef, sportsGroundKey)).key
+          const comment = {
+            [`${commentKey}/body`]: commentText,
+            [`${commentKey}/time`]: Date.now(),
+            [`${commentKey}/userName`]: userName
+          }
+          const sporttGroundCommentRef = ref(db, `comments/${sportsGroundKey}`)
+          await update(sporttGroundCommentRef, comment)
+          return { data: undefined }
+        } catch (error: any) {
+          return { error: { message: error.message } }
+        }
+      },
+      invalidatesTags: ['Comment']
+    }),
+    fetchComments: build.query<Comment[], string>({
+      async queryFn(sportsGroundKey) {
+        try {
+          const db = getDatabase(app)
+          const commentsRef = ref(db, `comments/${sportsGroundKey}`)
+          const snapshot: Comment[] = (await get(commentsRef)).val()
+          if (snapshot === null) {
+            return { data: [] }
+          }
+          return { data: snapshot }
+        } catch (error: any) {
+          return { error: { message: error.message } }
+        }
+      },
+      providesTags: ['Comment']
     })
   })
 })
 
-interface FetchSportsGroundsResponse {
-  [key: string]: SportsGround
-}
+type SportsGroundResponse = Record<string, SportsGround>
+type SportsGroundCommentsResponse = Record<string, SportsGround>
+
 interface AddSportsGroundRequest {
   description: string
   marker: Marker
   files: File[]
 }
 
-export const { useFetchSportsGroundsQuery, useAddSportsGroundMutation } = markersApi
+interface AddCommentRequest {
+  sportsGroundKey: string
+  commentText: string
+  userName: string
+}
+
+export const {
+  useFetchSportsGroundsQuery,
+  useAddSportsGroundMutation,
+  useLazyFetchCommentsQuery,
+  useAddCommentMutation
+} = markersApi

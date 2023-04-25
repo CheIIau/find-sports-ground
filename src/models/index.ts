@@ -7,4 +7,10 @@ export interface SportsGroundWithKey extends SportsGround {
   sportsGroundKey: string
 }
 
+export interface Comment {
+  userName: string
+  body: string
+  time: string
+}
+
 export type Marker = [number, number]

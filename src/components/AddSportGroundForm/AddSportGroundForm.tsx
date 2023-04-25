@@ -78,6 +78,9 @@ const AddSportGroundForm: FunctionComponent<Props> = ({ marker }) => {
     setPhotoFiles(newPhotoFiles)
   }
   async function onSportGroundAdd() {
+    if (!description.length && !photoFiles.length) {
+      return setErrorMessage('You should add description either photos to add sports ground')
+    }
     await addSportsGround({ description, files: photoFiles, marker })
     dispatch(
       showSnackbar({
@@ -85,7 +88,7 @@ const AddSportGroundForm: FunctionComponent<Props> = ({ marker }) => {
         type: 'success'
       })
     )
-    navigate('/about')
+    navigate('/')
   }
   return (
     <>
