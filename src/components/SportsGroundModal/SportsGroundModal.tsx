@@ -1,10 +1,9 @@
 import { Backdrop, DialogContent, Modal, Slide } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
 import sportsGroundStyles from './SportsGroundModal.module.scss'
-import { FunctionComponent, useState } from 'react'
-import { SportsGroundWithKey } from 'src/models'
-import CommentSection from '../CommentSection/CommentSection'
-import { Comment } from 'src/models'
+import { type FunctionComponent } from 'react'
+import { type SportsGroundWithKey, type Comment } from 'src/models'
+import CommentSection from '../Comments/CommentSection/CommentSection'
 
 interface Props {
   selectedSportsGroundKey: string
@@ -12,7 +11,8 @@ interface Props {
   setSelectedSportsGroundKey: React.Dispatch<React.SetStateAction<string>>
   setOpenedImage: React.Dispatch<React.SetStateAction<string>>
   comments: Comment[] | undefined
-  addComment: (comment: string) => void
+  addComment: (comment: string) => void,
+  isCommentsLoading: boolean
 }
 
 const sportsGroundModal: FunctionComponent<Props> = ({
@@ -21,7 +21,8 @@ const sportsGroundModal: FunctionComponent<Props> = ({
   setSelectedSportsGroundKey,
   setOpenedImage,
   comments,
-  addComment
+  addComment,
+  isCommentsLoading
 }) => {
   return (
     <Modal
@@ -49,7 +50,13 @@ const sportsGroundModal: FunctionComponent<Props> = ({
           appear={window.innerWidth > 900}
         >
           <div>
-            <div className={sportsGroundStyles.carousel__wrapper}>
+            <div
+              className={`${sportsGroundStyles.carousel__wrapper} ${
+                !!selectedSportsGround?.fileUrls?.length
+                  ? `${sportsGroundStyles.carousel__wrapper_width}`
+                  : ''
+              }`}
+            >
               {selectedSportsGround?.fileUrls?.length && (
                 <Carousel
                   animation="fade"
@@ -73,7 +80,7 @@ const sportsGroundModal: FunctionComponent<Props> = ({
                   >
                     {selectedSportsGround?.description}
                   </DialogContent>
-                  <CommentSection comments={comments} addComment={addComment} />
+                  <CommentSection isLoading={isCommentsLoading} comments={comments} addComment={addComment} />
                 </div>
               )}
             </div>

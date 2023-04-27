@@ -57,6 +57,12 @@ module.exports = {
         }
       }
     ],
-    'n/no-callback-literal': 'off'
+    'n/no-callback-literal': 'off',
+    '@typescript-eslint/no-confusing-void-expression': [
+      'error',
+      {
+        ignoreArrowShorthand: true
+      }
+    ]
   }
 }

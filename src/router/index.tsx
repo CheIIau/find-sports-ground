@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/promise-function-async */
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-import { FunctionComponent, lazy } from 'react'
+import { type FunctionComponent, lazy } from 'react'
 import App from 'src/pages/App'
 import { useAppSelector } from 'src/hooks/redux'
 const About = lazy(() => import('src/pages/AboutPage'))

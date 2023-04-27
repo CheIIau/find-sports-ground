@@ -1,5 +1,5 @@
-import TextField, { StandardTextFieldProps } from '@mui/material/TextField'
-import { useState, ChangeEvent, useEffect, FunctionComponent, SetStateAction, Dispatch } from 'react'
+import TextField, { type StandardTextFieldProps } from '@mui/material/TextField'
+import { useState, type ChangeEvent, useEffect, type FunctionComponent, type SetStateAction, type Dispatch } from 'react'
 
 interface Props extends StandardTextFieldProps {
   regex?: RegExp
@@ -15,7 +15,7 @@ const inputComponent: FunctionComponent<Props> = ({
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (regex) {
-      return setValue(event.target.value.replace(regex, ''))
+      setValue(event.target.value.replace(regex, '')); return
     }
     setValue(event.target.value)
   }

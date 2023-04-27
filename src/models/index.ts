@@ -8,9 +8,9 @@ export interface SportsGroundWithKey extends SportsGround {
 }
 
 export interface Comment {
-  userName: string
+  username: string
   body: string
-  time: string
+  time: number
 }
 
 export type Marker = [number, number]

@@ -1,5 +1,5 @@
 import { Fade, Modal } from '@mui/material'
-import { FunctionComponent } from 'react'
+import { type FunctionComponent } from 'react'
 import { Close as CloseIcon } from '@mui/icons-material'
 
 interface Props {

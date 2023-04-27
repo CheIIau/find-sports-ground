@@ -1,0 +1,13 @@
+.comment {
+  display: flex;
+  flex-direction: row;
+}
+.comment__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.comment__date {
+}
+.comment__username {
+}

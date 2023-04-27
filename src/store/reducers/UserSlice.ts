@@ -1,4 +1,4 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, type PayloadAction } from '@reduxjs/toolkit'
 import { userApi } from 'src/services/UserService'
 
 interface UserState {
@@ -70,5 +70,7 @@ export const userSlice = createSlice({
       )
   }
 })
+
+export const { setLoading, setUser } = userSlice.actions
 
 export default userSlice.reducer

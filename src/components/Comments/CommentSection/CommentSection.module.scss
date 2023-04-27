@@ -1,0 +1,14 @@
+.comment-section {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  @media (max-width: 900px) {
+    overflow-y: scroll;
+  }
+}
+.comment-input {
+  margin-top: 20px;
+  width: 100%;
+}

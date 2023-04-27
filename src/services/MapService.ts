@@ -15,9 +15,14 @@ import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
-  StorageReference
+  type StorageReference
 } from 'firebase/storage'
-import { Marker, SportsGround, SportsGroundWithKey, Comment } from 'src/models'
+import {
+  type Marker,
+  type SportsGround,
+  type SportsGroundWithKey,
+  type Comment
+} from 'src/models'
 
 export const markersApi = createApi({
   reducerPath: 'markers',
@@ -84,20 +89,26 @@ export const markersApi = createApi({
       invalidatesTags: ['Marker']
     }),
     addComment: build.mutation<void, AddCommentRequest>({
-      async queryFn({ sportsGroundKey, commentText, userName }) {
+      async queryFn({ sportsGroundKey, commentText, username }) {
         try {
+          console.log(sportsGroundKey)
           const db = getDatabase(app)
           const commentsRef = ref(db, 'comments')
           const commentKey = push(child(commentsRef, sportsGroundKey)).key
+          console.log(commentKey)
+          if (!commentKey) {
+            return { error: { message: 'Cannot push comment in DB' } }
+          }
           const comment = {
             [`${commentKey}/body`]: commentText,
             [`${commentKey}/time`]: Date.now(),
-            [`${commentKey}/userName`]: userName
+            [`${commentKey}/username`]: username
           }
           const sporttGroundCommentRef = ref(db, `comments/${sportsGroundKey}`)
           await update(sporttGroundCommentRef, comment)
           return { data: undefined }
         } catch (error: any) {
+          console.log(123)
           return { error: { message: error.message } }
         }
       },
@@ -112,7 +123,9 @@ export const markersApi = createApi({
           if (snapshot === null) {
             return { data: [] }
           }
-          return { data: snapshot }
+          return {
+            data: Object.values(snapshot).filter((el) => Object.keys(el).length) // remove empty objects
+          }
         } catch (error: any) {
           return { error: { message: error.message } }
         }
@@ -123,7 +136,6 @@ export const markersApi = createApi({
 })
 
 type SportsGroundResponse = Record<string, SportsGround>
-type SportsGroundCommentsResponse = Record<string, SportsGround>
 
 interface AddSportsGroundRequest {
   description: string
@@ -134,7 +146,7 @@ interface AddSportsGroundRequest {
 interface AddCommentRequest {
   sportsGroundKey: string
   commentText: string
-  userName: string
+  username: string
 }
 
 export const {
