@@ -62,17 +62,20 @@ function loginPage() {
         }}
       >
         <InputComponent
+
+        inputValue={email}
           regex={emailTypingRegex}
-          parentHandleChange={setEmail}
+          setValue={setEmail}
           error={!!email ? !!validateEmail : false}
           helperText={email.length ? validateEmail : ''}
           style={{ marginBottom: '10px' }}
           {...loginProps}
         />
         <InputComponent
+          inputValue={password}
           error={!!password ? !!validatePassword : false}
           helperText={password.length ? validatePassword : ''}
-          parentHandleChange={setPassword}
+          setValue={setPassword}
           {...passwordProps}
         />
         <Box display="flex" justifyContent="space-evenly" mt="24px">

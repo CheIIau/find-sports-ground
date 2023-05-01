@@ -42,7 +42,7 @@ const commentSection: FunctionComponent<Props> = ({
 
       <InputComponent
         setValue={setComment}
-        value={comment}
+        inputValue={comment}
         className={commentSectionStyles['comment-input']}
         multiline
         maxRows={20}

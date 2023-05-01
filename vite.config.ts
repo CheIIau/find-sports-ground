@@ -17,5 +17,18 @@ export default defineConfig({
   },
   esbuild: {
     legalComments: 'none'
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          ymaps: ['ymaps'],
+          '@emotion/react': ['@emotion/react'],
+          '@emotion/styled': ['@emotion/styled'],
+          '@mui/icons-material': ['@mui/icons-material'],
+          '@reduxjs/toolkit': ['@reduxjs/toolkit']
+        }
+      }
+    }
   }
 })

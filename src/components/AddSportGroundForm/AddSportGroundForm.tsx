@@ -106,7 +106,7 @@ const AddSportGroundForm: FunctionComponent<Props> = ({ marker }) => {
         </Typography>
         <InputComponent
           setValue={setDescription}
-          value={description}
+          inputValue={description}
           multiline
           fullWidth
           minRows={3}

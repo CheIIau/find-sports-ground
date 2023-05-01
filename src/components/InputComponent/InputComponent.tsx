@@ -9,13 +9,13 @@ import {
 interface Props extends StandardTextFieldProps {
   regex?: RegExp
   setValue: Dispatch<SetStateAction<string>>
-  value: string
+  inputValue: string
 }
 
 const inputComponent: FunctionComponent<Props> = ({
   regex,
   setValue,
-  value,
+  inputValue,
   ...props
 }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +29,7 @@ const inputComponent: FunctionComponent<Props> = ({
   return (
     <div>
       <TextField
-        value={value}
+        value={inputValue}
         onInput={handleChange}
         {...props}
         sx={{
