@@ -64,7 +64,7 @@
   flex-shrink: 3;
   background-color: #464646;
   border-radius: 10px;
-  padding: 16px;
+  padding: 16px !important;
   overflow: visible !important;
   @media (max-width: 901px) {
     margin-top: 24px;
