@@ -23,11 +23,15 @@ const commentsList: FunctionComponent<Props> = ({ comments }) => {
                 sx={{ marginRight: '8px' }}
               />
               <div className={commentStyles.comment__body}>
-                <div>
-                  <p>{comment.username}</p>
-                  <p>{formatDate(comment.time)}</p>
+                <div className={commentStyles.comment__title}>
+                  <p className={commentStyles.comment__username}>
+                    {comment.username}
+                  </p>
+                  <p className={commentStyles.comment__date}>
+                    {formatDate(comment.time)}
+                  </p>
                 </div>
-                <p>{comment.body}</p>
+                <p className={commentStyles.comment__text}>{comment.body}</p>
               </div>
             </div>
           )

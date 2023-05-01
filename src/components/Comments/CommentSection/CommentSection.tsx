@@ -25,7 +25,11 @@ const commentSection: FunctionComponent<Props> = ({
   // ToDo add timeout
   return (
     <div className={commentSectionStyles['comment-section']}>
-      <Typography textAlign={'left'} fontSize={'18px'}>
+      <Typography
+        textAlign={'left'}
+        fontSize={'18px'}
+        sx={{ marginBottom: '10px' }}
+      >
         Comments:
       </Typography>
       {isLoading ? (
@@ -37,7 +41,8 @@ const commentSection: FunctionComponent<Props> = ({
       )}
 
       <InputComponent
-        parentHandleChange={setComment}
+        setValue={setComment}
+        value={comment}
         className={commentSectionStyles['comment-input']}
         multiline
         maxRows={20}

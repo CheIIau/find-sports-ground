@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo, useState } from 'react'
+import { type FunctionComponent, useMemo, useState } from 'react'
 import {
   Button,
   Fade,
@@ -52,7 +52,8 @@ const AddSportGroundForm: FunctionComponent<Props> = ({ marker }) => {
     const files = event.target.files
     if (!files?.length) return
     if (files?.length + photoFiles.length > 3) {
-      return setErrorMessage('You cannot upload more than 3 photos')
+      setErrorMessage('You cannot upload more than 3 photos')
+      return
     }
     const filesArr = Array.from(files)
     // if (limitedPhotos.length > 3) {
@@ -79,7 +80,10 @@ const AddSportGroundForm: FunctionComponent<Props> = ({ marker }) => {
   }
   async function onSportGroundAdd() {
     if (!description.length && !photoFiles.length) {
-      return setErrorMessage('You should add description either photos to add sports ground')
+      setErrorMessage(
+        'You should add either description or photos to add sports ground'
+      )
+      return
     }
     await addSportsGround({ description, files: photoFiles, marker })
     dispatch(
@@ -101,7 +105,8 @@ const AddSportGroundForm: FunctionComponent<Props> = ({ marker }) => {
           You can add a description and photos of the sports ground
         </Typography>
         <InputComponent
-          parentHandleChange={setDescription}
+          setValue={setDescription}
+          value={description}
           multiline
           fullWidth
           minRows={3}

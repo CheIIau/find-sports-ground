@@ -2,10 +2,11 @@
   width: 100%;
   margin-top: 20px;
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   justify-content: center;
-  @media (max-width: 900px) {
-    overflow-y: scroll;
+  @media (min-width: 901px) {
+    margin-bottom: 32px;
   }
 }
 .comment-input {

@@ -74,7 +74,11 @@ const sportsGroundModal: FunctionComponent<Props> = ({
                 </Carousel>
               )}
               {selectedSportsGround?.description && (
-                <div className={sportsGroundStyles.description}>
+                <div className={`${sportsGroundStyles.description} ${
+                  !selectedSportsGround?.fileUrls?.length
+                    ? `${sportsGroundStyles.description_width}`
+                    : `${sportsGroundStyles['description_margin-left']}`
+                }`}>
                   <DialogContent
                     className={sportsGroundStyles.description__text}
                   >

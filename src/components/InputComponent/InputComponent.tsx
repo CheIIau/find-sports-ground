@@ -1,28 +1,30 @@
 import TextField, { type StandardTextFieldProps } from '@mui/material/TextField'
-import { useState, type ChangeEvent, useEffect, type FunctionComponent, type SetStateAction, type Dispatch } from 'react'
+import {
+  type ChangeEvent,
+  type FunctionComponent,
+  type SetStateAction,
+  type Dispatch
+} from 'react'
 
 interface Props extends StandardTextFieldProps {
   regex?: RegExp
-  parentHandleChange: Dispatch<SetStateAction<string>>
+  setValue: Dispatch<SetStateAction<string>>
+  value: string
 }
 
 const inputComponent: FunctionComponent<Props> = ({
   regex,
-  parentHandleChange,
+  setValue,
+  value,
   ...props
 }) => {
-  const [value, setValue] = useState('')
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (regex) {
-      setValue(event.target.value.replace(regex, '')); return
+      setValue(event.target.value.replace(regex, ''))
+      return
     }
     setValue(event.target.value)
   }
-
-  useEffect(() => {
-    parentHandleChange(value)
-  }, [value])
 
   return (
     <div>

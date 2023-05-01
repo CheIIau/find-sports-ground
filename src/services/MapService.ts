@@ -91,11 +91,9 @@ export const markersApi = createApi({
     addComment: build.mutation<void, AddCommentRequest>({
       async queryFn({ sportsGroundKey, commentText, username }) {
         try {
-          console.log(sportsGroundKey)
           const db = getDatabase(app)
           const commentsRef = ref(db, 'comments')
           const commentKey = push(child(commentsRef, sportsGroundKey)).key
-          console.log(commentKey)
           if (!commentKey) {
             return { error: { message: 'Cannot push comment in DB' } }
           }

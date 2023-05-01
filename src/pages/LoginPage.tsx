@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material'
-import { StandardTextFieldProps } from '@mui/material/TextField'
+import { type StandardTextFieldProps } from '@mui/material/TextField'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import InputComponent from 'src/components/InputComponent/InputComponent'

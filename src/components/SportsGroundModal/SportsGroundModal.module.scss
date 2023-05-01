@@ -27,9 +27,12 @@
   border-radius: 10px;
   margin: 20px;
   max-height: 90vh;
-  
+  min-width: 50vw;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  overflow-y: hidden;
   @media (max-width: 900px) {
-    overflow-y: scroll;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -76,6 +79,11 @@
     display: none;
   }
   max-height: inherit;
+}
+.description_width {
+  width: 100%;
+}
+.description_margin-left {
   @media (min-width: 901px) {
     margin-left: 16px;
   }
