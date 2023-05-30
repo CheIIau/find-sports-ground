@@ -1,0 +1,63 @@
+stages:
+  - test
+  - build
+  - docker_build
+  - deploy
+
+image: node:20-alpine
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+
+variables:
+  SURGE_DOMAIN: https://find-sports-ground.surge.sh
+  SURGE_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXX
+
+test app:
+  stage: test
+  script:
+    - npm install
+    - npm run test
+  only:
+    - master
+
+build app:
+  stage: build
+  script:
+    - npm install
+    - npm run build
+  only:
+    - master
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - dist
+
+docker build:
+  stage: docker_build
+  image: docker:stable
+  variables:
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:dind
+  script:
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker build -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG} .
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}
+  tags: 
+    - docker
+
+deploy:
+  stage: deploy
+  before_script:
+    - npm install -g surge
+  script: 
+    - echo "Undone deployment script"
+    - echo "Need to define variables"
+    - echo "surge ./dist $SURGE_DOMAIN --token $SURGE_TOKEN"
+  environment: production
